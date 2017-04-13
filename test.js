@@ -5,13 +5,22 @@ var UglifyJS = require("uglify-js"),
     babel = require("babel-core"),
     colors = require('colors');
 
-let config = path.join(__dirname,'we_app','app.json'),
-    data = JSON.parse(fs.readFileSync(config).toString());
-
 colors.setTheme({  
     load: 'blue',  
     finish: 'red',  
 });
+
+let config = path.join(__dirname,'we_app','app.json'),
+    data = '';
+    fs.exists(config,function(exists){
+        if(!exists){
+            console.log('没有找到' + config .finish)
+        }else{
+            data = JSON.parse(fs.readFileSync(config).toString());
+
+            compressCode(); 
+        }
+    })
 
 const compressCode = ()=>{
 
@@ -44,5 +53,3 @@ const compressCode = ()=>{
 
     });
 }
-
-compressCode()
