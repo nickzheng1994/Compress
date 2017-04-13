@@ -76,7 +76,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "test": "compress"
+    "build": "node test.js"
   },
   "repository": {
     "type": "git",
