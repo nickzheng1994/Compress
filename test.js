@@ -5,6 +5,9 @@ var UglifyJS = require("uglify-js"),
     babel = require("babel-core"),
     colors = require('colors');
 var minify = require('html-minifier').minify;
+var CleanCSS = require('clean-css');
+var cssMinify = new CleanCSS();
+
 
 colors.setTheme({  
     load: 'blue',  
@@ -79,7 +82,7 @@ const compressPath =(el,format)=>{
 
     let min_path = path.join(...min_path_arr);
 
-    const mini_path = min_path.replace(format,'.min' + format);
+    const mini_path = min_path.replace(format,format);
 
     return {
         path: config_path,
@@ -125,11 +128,12 @@ const compressWXML = (el)=>{
 
     console.log(config_path + '正在压缩  '.load);
 
-    let result = minify(origCode, {
-            removeAttributeQuotes: true,
-            removeComments:true,
-            collapseWhitespace :true
-        });
+    // let result = minify(origCode, {
+    //         removeComments:true,
+    //         collapseWhitespace :true
+    //     });
+
+    let result = origCode;
 
     config_path = compressPath(el,'.wxml').mini_path;
 
@@ -139,6 +143,24 @@ const compressWXML = (el)=>{
 
 }
 
+//压缩wxss代码
+const compressCSS = (el)=>{
+
+    let config_path = compressPath(el,'.wxss').path;
+
+    let origCode = fs.readFileSync(config_path, 'utf8');
+
+    console.log(config_path + '正在压缩  '.load);
+
+    let result = cssMinify.minify(origCode);
+
+    config_path = compressPath(el,'.wxss').mini_path;
+
+    fs.writeFileSync(config_path,result.styles);
+
+    console.log(config_path + '已压缩完毕  '.finish)
+}
+
 //压缩代码
 const compressCode = ()=>{
 
@@ -146,5 +168,6 @@ const compressCode = ()=>{
 
         compressJS(el);
         compressWXML(el);
+        compressCSS(el);
     });
 }
